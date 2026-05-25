@@ -8,23 +8,10 @@ pacman-key --init && \
 pacman-key --populate archlinux && \
 pacman -Sy --noconfirm archlinux-keyring
 
+COPY pacman-pkgs.txt /opt/pacman-pkgs.txt
 RUN \
 pacman -Su --noconfirm && \
-pacman -S --noconfirm --needed \
-  base-devel \
-  curl \
-  docker \
-  gcc \
-  git \
-  just \
-  make \
-  net-tools \
-  npm \
-  openssh \
-  pnpm \
-  poetry \
-  procps-ng \
-  uv && \
+xargs pacman -S --noconfirm --needed </opt/pacman-pkgs.txt && \
 # Clean pacman cache to reduce image size
 pacman -Sc --noconfirm
 

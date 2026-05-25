@@ -26,13 +26,14 @@ shutdown() {
 
   # wait 3 seconds, and if background jobs are still running, escalate to SIGKILL.
   for _ in $(seq 1 30); do
-    if [ "$(jobs -p 2>/dev/null | wc -l)" -eq 0 ]; then
+    if [ "$(jobs -p 2>/dev/null | xargs kill -0 2>/dev/null | wc -l)" -eq 0 ]; then
       return
     else
       sleep 0.1
     fi
   done
   echo "Background jobs still running; sending SIGKILL."
+  jobs | xargs echo "--> "
   pkill -SIGKILL --pgroup $$
 }
 

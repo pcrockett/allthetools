@@ -1,7 +1,7 @@
 services:
   dev:
     build:
-      context: .
+      context: ./src
       dockerfile: Dockerfile
     hostname: devbox
     environment:

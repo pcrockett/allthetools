@@ -26,4 +26,7 @@ shell:
 ssh:
     #!/usr/bin/env bash
     set -euo pipefail
-    ssh -p "${SSH_PORT:-2222}" -o NoHostAuthenticationForLocalhost=yes "dev@${SSH_HOST:-127.0.0.1}"
+    ssh \
+        -p "${SSH_PORT:-2222}" \
+        -o NoHostAuthenticationForLocalhost=yes \
+        "dev@${SSH_HOST:-127.0.0.1}"
