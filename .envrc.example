@@ -1,0 +1,4 @@
+# shellcheck shell=bash
+strict_env
+
+export SSH_AUTHORIZED_KEYS="$(cat ~/.ssh/id_ed25519.pub)"

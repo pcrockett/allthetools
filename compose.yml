@@ -1,0 +1,19 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: devbox
+    environment:
+      - SSH_AUTHORIZED_KEYS=${SSH_AUTHORIZED_KEYS:-}
+    ports:
+      - "${SSH_HOST:-127.0.0.1}:${SSH_PORT:-2222}:22"
+    volumes:
+      - devbox-home:/home/dev
+    # Run as root so sshd can start; the entrypoint drops to dev for CMD
+    user: "0:0"
+    init: true
+
+volumes:
+  devbox-home:
+    driver: local
