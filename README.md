@@ -29,4 +29,4 @@ To add more supervised services, edit `src/start-allthetools`.
 
 `just publish <tag>` builds `src/Dockerfile` and pushes
 `ghcr.io/pcrockett/allthetools:<tag>`. Requires `docker login ghcr.io`
-beforehand.
+beforehand; see `just login`.

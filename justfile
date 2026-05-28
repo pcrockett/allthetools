@@ -50,7 +50,14 @@ ssh:
         -o NoHostAuthenticationForLocalhost=yes \
         "dev@${SSH_HOST:-127.0.0.1}"
 
-# Build and push ghcr.io/pcrockett/allthetools:<tag> (requires `docker login ghcr.io`)
+# Configure docker to push to GitHub image registry
+login:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    username="$(gh auth status --json hosts --jq '.hosts["github.com"].[0].login')"
+    gh auth token | docker login ghcr.io --password-stdin --username "${username}"
+
+# Build and push ghcr.io/pcrockett/allthetools:<tag>
 publish tag:
     docker build --pull --tag "{{image}}:{{tag}}" ./src
     docker push "{{image}}:{{tag}}"
