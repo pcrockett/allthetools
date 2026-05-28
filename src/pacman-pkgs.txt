@@ -1,3 +1,4 @@
+actionlint
 base-devel
 bat
 ca-certificates
@@ -8,6 +9,7 @@ gcc
 git
 git-delta
 github-cli
+go
 gzip
 jq
 just
@@ -25,8 +27,10 @@ procps-ng
 python
 python-pip
 ripgrep
+rust
 tar
 terraform
+tree
 unzip
 uv
 wget

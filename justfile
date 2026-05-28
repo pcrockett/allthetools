@@ -6,11 +6,11 @@ _default:
 
 # Build the image
 build:
-    docker compose build
+    docker compose build --pull
 
 # Run daemon (sshd + anything else in src/start-allthetools) in background
 up:
-    docker compose up --build --pull always --wait
+    docker compose up --wait
 
 # Stop daemon
 down:
@@ -52,5 +52,5 @@ ssh:
 
 # Build and push ghcr.io/pcrockett/allthetools:<tag> (requires `docker login ghcr.io`)
 publish tag:
-    docker build --tag "{{image}}:{{tag}}" ./src
+    docker build --pull --tag "{{image}}:{{tag}}" ./src
     docker push "{{image}}:{{tag}}"
