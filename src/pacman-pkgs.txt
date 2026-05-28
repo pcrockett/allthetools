@@ -25,7 +25,6 @@ procps-ng
 python
 python-pip
 ripgrep
-shellcheck
 tar
 terraform
 unzip
