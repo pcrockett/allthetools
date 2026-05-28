@@ -5,6 +5,18 @@ either as an interactive shell or as an sshd daemon supervised by tini.
 
 See the `justfile` for targets (`just` lists them).
 
+## Pulling
+
+```
+docker pull ghcr.io/pcrockett/allthetools:latest
+```
+
+Or as a base image:
+
+```dockerfile
+FROM ghcr.io/pcrockett/allthetools:latest
+```
+
 ## Daemon
 
 `just up` requires `SSH_AUTHORIZED_KEYS` in the environment — it's written to
