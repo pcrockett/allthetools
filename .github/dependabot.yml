@@ -6,3 +6,10 @@ updates:
       prefix: "chore(deps)"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/src"
+    commit-message:
+      prefix: "chore(deps)"
+    schedule:
+      interval: "weekly"

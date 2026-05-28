@@ -1,0 +1,45 @@
+#!/bin/bash
+# Supervise sshd and any other services listed below.
+# Intended to run as tini's child (compose sets `init: true`).
+#
+# To add a service: append another `start <command...>` line in the
+# "services" section. Each one runs in the background and is monitored;
+# if any of them exits, the whole container shuts down.
+set -euo pipefail
+
+ssh-keygen -A
+
+if [ -z "${SSH_AUTHORIZED_KEYS:-}" ]; then
+  echo "start-allthetools: SSH_AUTHORIZED_KEYS env var is required" >&2
+  exit 1
+fi
+install -d -o dev -g dev -m 700 /home/dev/.ssh
+printf '%s\n' "$SSH_AUTHORIZED_KEYS" >/home/dev/.ssh/authorized_keys
+chown dev:dev /home/dev/.ssh/authorized_keys
+chmod 600 /home/dev/.ssh/authorized_keys
+
+mkdir -p /run/sshd
+
+pids=()
+start() {
+  "$@" &
+  pids+=($!)
+}
+
+cleanup() {
+  kill -TERM "${pids[@]}" 2>/dev/null || true
+  wait 2>/dev/null || true
+}
+trap cleanup TERM INT
+
+# --- services ---------------------------------------------------------------
+start /usr/bin/sshd -D -e
+# start redis-server --port 6379
+# start /usr/local/bin/my-other-daemon
+# ----------------------------------------------------------------------------
+
+# Exit as soon as any supervised process dies, so tini tears the container down.
+wait -n
+status=$?
+cleanup
+exit "$status"

@@ -4,13 +4,14 @@ services:
       context: ./src
       dockerfile: Dockerfile
     hostname: devbox
+    command: /usr/local/bin/start-allthetools
     environment:
       - SSH_AUTHORIZED_KEYS=${SSH_AUTHORIZED_KEYS:-}
     ports:
       - "${SSH_HOST:-127.0.0.1}:${SSH_PORT:-2222}:22"
     volumes:
       - devbox-home:/home/dev
-    # Run as root so sshd can start; the entrypoint drops to dev for CMD
+    # sshd needs root; interactive shells drop to `dev` via `--user dev`.
     user: "0:0"
     init: true
 

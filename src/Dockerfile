@@ -24,11 +24,11 @@ mkdir -p /home/dev/.ssh && \
 chown dev:dev /home/dev/.ssh && \
 chmod 700 /home/dev/.ssh
 
-COPY sshd_config /etc/ssh/sshd_config
-COPY entrypoint.sh /entrypoint.sh
+COPY 99-allthetools.conf /etc/ssh/sshd_config.d/99-allthetools.conf
+COPY --chmod=0755 start-allthetools /usr/local/bin/start-allthetools
 
 # SSH port + any other ports you want exposed
 EXPOSE 22
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD []
+WORKDIR /
+CMD ["/bin/bash"]
