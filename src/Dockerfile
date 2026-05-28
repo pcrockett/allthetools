@@ -1,6 +1,8 @@
 # hadolint ignore=DL3007
 FROM archlinux:latest
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 # Skip docs/man/non-English locales at install time — saves ~100 MB across
 # the package set. Must be set before any pacman -S calls.
 RUN sed -i \
