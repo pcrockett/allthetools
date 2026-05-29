@@ -28,6 +28,7 @@ python
 python-pip
 ripgrep
 rust
+shfmt
 tar
 terraform
 tree
@@ -35,3 +36,5 @@ unzip
 uv
 wget
 which
+yamlfmt
+yamllint

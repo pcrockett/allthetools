@@ -1,5 +1,5 @@
 # hadolint ignore=DL3007
-FROM archlinux:latest
+FROM archlinux:latest AS base
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 COPY pacman-pkgs.txt /opt/pacman-pkgs.txt
@@ -32,21 +32,46 @@ mkdir -p /home/dev/.ssh && \
 chown dev:dev /home/dev/.ssh && \
 chmod 700 /home/dev/.ssh
 
+COPY download-artifact.sh /usr/local/bin
+
+FROM base AS shellcheck
 # shellcheck-static avoids pulling in 165 MB of GHC runtime that the Arch
 # `shellcheck` package depends on.
 ARG SHELLCHECK_VERSION=0.11.0
-ARG SHELLCHECK_SHA256=8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198
+ARG SHELLCHECK_SHA=8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198
 RUN \
-curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" -o /tmp/shellcheck.tar.xz && \
-  echo "${SHELLCHECK_SHA256}  /tmp/shellcheck.tar.xz" | sha256sum -c - && \
-  tar -xJ -C /usr/local/bin --strip-components=1 -f /tmp/shellcheck.tar.xz "shellcheck-v${SHELLCHECK_VERSION}/shellcheck" && \
-  rm /tmp/shellcheck.tar.xz
+download-artifact.sh \
+  "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
+  /tmp/shellcheck.tar.xz \
+  "${SHELLCHECK_SHA}" && \
+tar -xJ -C /usr/local/bin --strip-components=1 -f /tmp/shellcheck.tar.xz "shellcheck-v${SHELLCHECK_VERSION}/shellcheck" && \
+rm /tmp/shellcheck.tar.xz
 
+FROM base AS hadolint
+ARG HADOLINT_VERSION=2.14.0
+ARG HADOLINT_SHA=6bf226944684f56c84dd014e8b979d27425c0148f61b3bd99bcc6f39e9dc5a47
+RUN \
+download-artifact.sh \
+  "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-linux-x86_64" \
+  /tmp/hadolint \
+  "${HADOLINT_SHA}" && \
+chmod +x /tmp/hadolint && \
+mv /tmp/hadolint /usr/local/bin
+
+FROM base
+
+COPY --from=shellcheck /usr/local/bin/shellcheck /usr/local/bin
+COPY --from=hadolint /usr/local/bin/hadolint /usr/local/bin
 COPY 99-allthetools.conf /etc/ssh/sshd_config.d/99-allthetools.conf
 COPY start-allthetools /usr/local/bin/start-allthetools
 
 # SSH port + any other ports you want exposed
 EXPOSE 22
+
+
+ENV \
+DIFFPROG=/usr/bin/delta \
+PIP_REQUIRE_VIRTUALENV=true
 
 WORKDIR /
 CMD ["/bin/bash"]
