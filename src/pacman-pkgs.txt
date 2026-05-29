@@ -1,6 +1,7 @@
 actionlint
 base-devel
 bat
+bats
 ca-certificates
 curl
 docker
