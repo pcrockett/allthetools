@@ -30,3 +30,10 @@ To add more supervised services, edit `src/start-allthetools`.
 `just publish <tag>` builds `src/Dockerfile` and pushes
 `ghcr.io/pcrockett/allthetools:<tag>`. Requires `docker login ghcr.io`
 beforehand; see `just login`.
+
+## Deriving New Images
+
+If you're building your own image based on this one, there's a `download-artifact.sh`
+script to download arbitrary artifacts and validate their SHA256 checksums, for those
+pesky tools that haven't made it into Arch repos yet. See `Dockerfile` for example
+usage.
