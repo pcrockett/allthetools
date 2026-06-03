@@ -25,12 +25,14 @@ rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/* /etc/pacman.d/gnupg && \
 #
 # setup unprivileged user
 useradd --create-home --shell /bin/bash dev && \
+#
 # "unlock" account by setting a password that can't be matched
 # important if we want to login via SSH
 usermod -p '*' dev && \
-mkdir -p /home/dev/.ssh && \
-chown dev:dev /home/dev/.ssh && \
-chmod 700 /home/dev/.ssh
+#
+# setup services script directory
+mkdir --parent /opt/allthetools/services/active && \
+ln --symbolic ../sshd.sh /opt/allthetools/services/active/50-sshd.sh
 
 COPY download-artifact.sh /usr/local/bin
 
@@ -62,12 +64,10 @@ FROM base
 
 COPY --from=shellcheck /usr/local/bin/shellcheck /usr/local/bin
 COPY --from=hadolint /usr/local/bin/hadolint /usr/local/bin
-COPY 99-allthetools.conf /etc/ssh/sshd_config.d/99-allthetools.conf
+COPY sshd.sh /opt/allthetools/services/
 COPY start-allthetools /usr/local/bin/start-allthetools
 
-# SSH port + any other ports you want exposed
 EXPOSE 22
-
 
 ENV \
 DIFFPROG=/usr/bin/delta \

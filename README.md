@@ -23,7 +23,8 @@ FROM ghcr.io/pcrockett/allthetools:latest
 `dev`'s `authorized_keys` at boot and the daemon refuses to start without it.
 The provided `.envrc.example` populates it from `~/.ssh/id_ed25519.pub`.
 
-To add more supervised services, edit `src/start-allthetools`.
+To add more supervised services, add a script that `exec`s the service to
+`/opt/allthetools/services/active`. See [the sshd script](src/sshd.sh) for an example.
 
 ## Publishing
 
