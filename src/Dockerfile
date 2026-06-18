@@ -24,7 +24,7 @@ xargs pacman --sync --needed --noconfirm --noprogressbar </opt/pacman-pkgs.txt &
 rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/* /etc/pacman.d/gnupg && \
 #
 # setup unprivileged user
-useradd --create-home --shell /bin/bash dev && \
+useradd --create-home --shell /bin/fish dev && \
 #
 # "unlock" account by setting a password that can't be matched
 # important if we want to login via SSH
@@ -32,7 +32,8 @@ usermod -p '*' dev && \
 #
 # setup services script directory
 mkdir --parent /opt/allthetools/services/active && \
-ln --symbolic ../sshd.sh /opt/allthetools/services/active/50-sshd.sh
+ln --symbolic ../sshd.sh /opt/allthetools/services/active/50-sshd.sh && \
+ln --symbolic "$(command -v helix)" /usr/local/bin/hx
 
 COPY download-artifact.sh /usr/local/bin
 
@@ -66,6 +67,8 @@ COPY --from=shellcheck /usr/local/bin/shellcheck /usr/local/bin
 COPY --from=hadolint /usr/local/bin/hadolint /usr/local/bin
 COPY sshd.sh /opt/allthetools/services/
 COPY start-allthetools /usr/local/bin/start-allthetools
+COPY --chown=dev:dev bashrc /home/dev/.bashrc
+COPY --chown=dev:dev config.fish /home/dev/.config/fish/config.fish
 
 EXPOSE 22
 

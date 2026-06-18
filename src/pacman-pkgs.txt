@@ -4,8 +4,10 @@ bat
 bats
 ca-certificates
 curl
+direnv
 docker
 fd
+fish
 fzf
 gcc
 git
@@ -13,6 +15,7 @@ git-delta
 github-cli
 go
 gzip
+helix
 jq
 just
 kitty-terminfo
@@ -32,6 +35,7 @@ python-pip
 ripgrep
 rust
 shfmt
+starship
 tar
 task
 terraform
