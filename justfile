@@ -1,5 +1,3 @@
-image := "ghcr.io/pcrockett/allthetools"
-
 [private]
 _default:
     @just --list

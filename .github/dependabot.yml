@@ -6,6 +6,8 @@ updates:
       prefix: "chore(deps)"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "docker"
     directory: "/src"
@@ -13,3 +15,5 @@ updates:
       prefix: "chore(deps)"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
