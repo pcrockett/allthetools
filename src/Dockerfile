@@ -51,8 +51,8 @@ tar -xJ -C /usr/local/bin --strip-components=1 -f /tmp/shellcheck.tar.xz "shellc
 rm /tmp/shellcheck.tar.xz
 
 FROM base AS hadolint
-ARG HADOLINT_VERSION=v2.14.0
-ARG HADOLINT_SHA=6bf226944684f56c84dd014e8b979d27425c0148f61b3bd99bcc6f39e9dc5a47
+ARG HADOLINT_VERSION=v2.15.1
+ARG HADOLINT_SHA=c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
 RUN \
 download-artifact.sh \
   "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-linux-x86_64" \
