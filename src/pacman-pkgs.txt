@@ -21,6 +21,7 @@ just
 kitty-terminfo
 less
 make
+mise
 net-tools
 nodejs
 npm
