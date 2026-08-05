@@ -10,3 +10,4 @@ alias ll='ls -lh --color=auto'
 alias grep='grep --color=auto'
 
 eval -- "$(/usr/bin/starship init bash --print-full-init)"
+eval -- "$(mise activate bash)"
