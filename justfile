@@ -61,44 +61,7 @@ ssh:
 publish:
     gh workflow run publish.yml
 
-# Update hadolint version and checksum in Dockerfile
+# Update the mise deps inside the Dockerfile
 [group("deps")]
-update-hadolint:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    latest_release="$(
-        gh release view \
-            --repo hadolint/hadolint \
-            --json assets,tagName \
-            --jq '
-                {
-                    tagName: .tagName,
-                    asset: .assets.[] | select(.name == "hadolint-linux-x86_64")
-                }
-            '
-    )"
-    version="$(echo "${latest_release}" | jq --raw-output '.tagName')"
-    sha="$(echo "${latest_release}" | jq --raw-output '.asset.digest' | cut -d: -f2)"
-    sed --in-place "s/^ARG HADOLINT_VERSION=.*$/ARG HADOLINT_VERSION=${version}/" src/Dockerfile
-    sed --in-place "s/^ARG HADOLINT_SHA=.*$/ARG HADOLINT_SHA=${sha}/" src/Dockerfile
-
-# Update shellcheck version and checksum in Dockerfile
-[group("deps")]
-update-shellcheck:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    latest_release="$(
-        gh release view \
-            --repo koalaman/shellcheck \
-            --json assets,tagName \
-            --jq '
-                {
-                    tagName: .tagName,
-                    asset: .assets.[] | select(.name | test("linux.x86_64.tar.xz$"))
-                }
-            '
-    )"
-    version="$(echo "${latest_release}" | jq --raw-output '.tagName')"
-    sha="$(echo "${latest_release}" | jq --raw-output '.asset.digest' | cut -d: -f2)"
-    sed --in-place "s/^ARG SHELLCHECK_VERSION=.*$/ARG SHELLCHECK_VERSION=${version}/" src/Dockerfile
-    sed --in-place "s/^ARG SHELLCHECK_SHA=.*$/ARG SHELLCHECK_SHA=${sha}/" src/Dockerfile
+update-mise:
+    cd src && mise up --no-global

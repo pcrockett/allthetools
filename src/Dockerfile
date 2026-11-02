@@ -37,34 +37,17 @@ ln --symbolic "$(command -v helix)" /usr/local/bin/hx
 
 COPY download-artifact.sh /usr/local/bin
 
-FROM base AS shellcheck
-# shellcheck-static avoids pulling in 165 MB of GHC runtime that the Arch
-# `shellcheck` package depends on.
-ARG SHELLCHECK_VERSION=v0.11.0
-ARG SHELLCHECK_SHA=8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198
-RUN \
-download-artifact.sh \
-  "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
-  /tmp/shellcheck.tar.xz \
-  "${SHELLCHECK_SHA}" && \
-tar -xJ -C /usr/local/bin --strip-components=1 -f /tmp/shellcheck.tar.xz "shellcheck-${SHELLCHECK_VERSION}/shellcheck" && \
-rm /tmp/shellcheck.tar.xz
+FROM base AS mise-tools
 
-FROM base AS hadolint
-ARG HADOLINT_VERSION=v2.15.1
-ARG HADOLINT_SHA=c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507
-RUN \
-download-artifact.sh \
-  "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-linux-x86_64" \
-  /tmp/hadolint \
-  "${HADOLINT_SHA}" && \
-chmod +x /tmp/hadolint && \
-mv /tmp/hadolint /usr/local/bin
+COPY mise.toml /root/.config/mise/config.toml
+COPY mise.lock /root/.config/mise/mise.lock
+RUN mise install --locked
 
 FROM base
 
-COPY --from=shellcheck /usr/local/bin/shellcheck /usr/local/bin
-COPY --from=hadolint /usr/local/bin/hadolint /usr/local/bin
+COPY --from=mise-tools /root/.local/share/mise/installs/shellcheck/latest/shellcheck-v*/shellcheck /usr/local/bin
+COPY --from=mise-tools /root/.local/share/mise/installs/hadolint/latest/hadolint /usr/local/bin
+COPY --from=mise-tools /root/.config/mise/ /root/home/.config/mise/
 COPY sshd.sh /opt/allthetools/services/
 COPY start-allthetools /usr/local/bin/start-allthetools
 COPY --chown=dev:dev bashrc /home/dev/.bashrc

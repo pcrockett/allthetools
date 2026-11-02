@@ -1,0 +1,13 @@
+[settings]
+lockfile = true
+minimum_release_age = "1wk"
+lockfile_platforms = ["linux-x64"]
+
+[settings.oci]
+default_from = "debian:trixie-slim"
+
+[tools]
+# not getting shellcheck from pacman because it pulls down a lot of bloat in the form of
+# dependencies. shellcheck from mise is a single statically-compiled executable.
+shellcheck = "latest"
+hadolint = "latest"
